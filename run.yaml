@@ -1,5 +1,6 @@
 - name: set environment variables & run docker-compose up -d
-  hosts: myhosts
+  hosts: localhost
+  gather_facts: true
 
   vars:
     postgres_dir: /home/tscheidel/postgres
