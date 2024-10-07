@@ -1,0 +1,39 @@
+- name: set environment variables & run docker-compose up -d
+  hosts: myhosts
+
+  tasks:
+    environment:
+      one_fact: something
+      other_fact: "{{ local_var * 2 }}"
+
+  # tasks:
+  #  - name: docker compose up
+  #    community.general.docker_compose:
+        project_src: /home/tscheidel/data/sql-storage
+        project_name: postgres
+        state: present
+        build: no
+        pull: no
+        remove_orphans: yes
+        recreate: yes
+        detached: yes
+        log_driver: json-file
+        log_options:
+          max-size: 10m
+          max-file: "3"
+        files:
+          - docker-compose.yml
+
+       env:
+         POSTGRES_USER: "{{ lookup('env', 'POSTGRES_USER') }}"
+         POSTGRES_PASSWORD: "{{ lookup('env', 'POSTGRES_PASSWORD') }}"
+         POSTGRES_DB: "{{ lookup('env', 'POSTGRES_DB') }}"
+       volumes:
+         - /home/tscheidel/data/sql-storage/postgres:/var/lib/postgresql/data
+       ports:
+         - "5432:5432"
+       networks:
+         - name: postgres
+       restart: unless-stopped
+
+     
