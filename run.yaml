@@ -1,10 +1,9 @@
 - name: set environment variables & run docker-compose up -d
   hosts: localhost
-  gather_facts: true
 
   vars:
     postgres_dir: /home/tscheidel/postgres
-    repo_url: "https://github.com/uashogeschoolutrecht/vhp4-safety.git"
+    repo_url: "https://github.com/sche34/change_postgres.git"
 
   tasks:
     - name: Creates directory
