@@ -61,6 +61,18 @@
     #     name: docker-compose
     #     state: present
 
+    - name: Ensure Docker service is running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Add user to Docker group
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
     - name: Create and start services
       ansible.builtin.command:
         cmd: sudo ~/.docker/cli-plugins/docker-compose up -d
