@@ -39,6 +39,10 @@
         path: "{{ project_dir }}/.env"
         line: 'POSTGRES_DB="{{ POSTGRES_DB }}"'
 
+    - name: Update apt package cache
+      ansible.builtin.apt:
+        update_cache: yes        
+
     - name: install docker-compose
       ansible.builtin.apt:
         name: docker-compose
