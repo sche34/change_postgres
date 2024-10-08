@@ -48,7 +48,7 @@
         name: docker-compose
         state: present
 
-    - name: Create and start services
-      ansible.builtin.command:
-        cmd: docker-compose up -d
-        chdir: "{{ project_dir }}"
+    # - name: Create and start services
+    #   ansible.builtin.command:
+    #     cmd: docker-compose up -d
+    #     chdir: "{{ project_dir }}"
