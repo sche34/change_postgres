@@ -2,13 +2,13 @@
   hosts: localhost
 
   vars:
-    postgres_dir: /home/tscheidel/postgres
+    project_dir: /home/tscheidel/postgres
     repo_url: "https://github.com/sche34/change_postgres.git"
 
   tasks:
     - name: Creates directory
       ansible.builtin.file:
-        path: "{{ postgres_dir }}"
+        path: "{{ project_dir }}"
         state: directory
 
     - name: Clone the Git repository into the shared project directory
@@ -21,20 +21,29 @@
 
     - name: Create a file
       ansible.builtin.file:
-        path: "{{ postgres_dir }}/.env"
+        path: "{{ project_dir }}/.env"
         state: touch
 
     - name: Write postgres user to .env file
       ansible.builtin.lineinfile:
-        path: "{{ postgres_dir }}/.env"
+        path: "{{ project_dir }}/.env"
         line: 'POSTGRES_USER="{{ POSTGRES_USER }}"'
 
     - name: Write postgres password to .env file
       ansible.builtin.lineinfile:
-        path: "{{ postgres_dir }}/.env"
+        path: "{{ project_dir }}/.env"
         line: 'POSTGRES_PASSWORD="{{ POSTGRES_PASSWORD }}"'
 
     - name: Write postgres db to .env file
       ansible.builtin.lineinfile:
-        path: "{{ postgres_dir }}/.env"
+        path: "{{ project_dir }}/.env"
         line: 'POSTGRES_DB="{{ POSTGRES_DB }}"'
+
+    - name: Create and start services
+      community.docker.docker_compose_v2:
+        project_src: "{{ project_dir }}"
+      register: output
+
+    - name: Show results
+      ansible.builtin.debug:
+        var: output
