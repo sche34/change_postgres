@@ -15,7 +15,7 @@
       git:
         repo: "{{ repo_url }}"
         dest: "{{ project_dir }}"
-        version: main
+        version: master
         force: yes
         accept_hostkey: yes
 
