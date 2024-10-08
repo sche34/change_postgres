@@ -39,6 +39,11 @@
         path: "{{ project_dir }}/.env"
         line: 'POSTGRES_DB="{{ POSTGRES_DB }}"'
 
+    - name: install docker-compose
+      ansible.builtin.apt:
+        name: docker-compose
+        state: present
+
     # - name: Create and start services
     #   community.docker.docker_compose_v2:
     #     project_src: "{{ project_dir }}"
