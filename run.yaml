@@ -44,11 +44,11 @@
         name: docker-compose
         state: present
 
-    # - name: Create and start services
-    #   community.docker.docker_compose_v2:
-    #     project_src: "{{ project_dir }}"
-    #   register: output
+    - name: Create and start services
+      community.docker.docker_compose_v2:
+        project_src: "{{ project_dir }}"
+      register: output
 
-    # - name: Show results
-    #   ansible.builtin.debug:
-    #     var: output
+    - name: Show results
+      ansible.builtin.debug:
+        var: output
