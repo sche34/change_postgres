@@ -21,20 +21,20 @@
 
     - name: Create a file
       ansible.builtin.file:
-        path: "{{ postgres_dir }}"/.env
+        path: "{{ postgres_dir }}/.env"
         state: touch
 
     - name: Write postgres user to .env file
       ansible.builtin.lineinfile:
-        path: "{{ postgres_dir }}"/.env
+        path: "{{ postgres_dir }}/.env"
         line: 'POSTGRES_USER="{{ POSTGRES_USER }}"'
 
     - name: Write postgres password to .env file
       ansible.builtin.lineinfile:
-        path: "{{ postgres_dir }}"/.env
+        path: "{{ postgres_dir }}/.env"
         line: 'POSTGRES_PASSWORD="{{ POSTGRES_PASSWORD }}"'
 
     - name: Write postgres db to .env file
       ansible.builtin.lineinfile:
-        path: "{{ postgres_dir }}"/.env
+        path: "{{ postgres_dir }}/.env"
         line: 'POSTGRES_DB="{{ POSTGRES_DB }}"'
