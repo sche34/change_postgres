@@ -61,6 +61,12 @@
     #     name: docker-compose
     #     state: present
 
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
     - name: Ensure Docker service is running
       ansible.builtin.service:
         name: docker
