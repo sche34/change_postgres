@@ -5,9 +5,9 @@ services:
     container_name: postgres_container
     image: postgres
     env_file:
-      - .env
-    volumes:
-      - /home/tscheidel/data/sql-storage/postgres:/var/lib/postgresql/data
+      - /home/tscheidel/.env
+    # volumes:
+    #   - /home/tscheidel/data/sql-storage/postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
