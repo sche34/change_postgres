@@ -2,7 +2,7 @@
   hosts: localhost
 
   vars:
-    project_dir: /home/tscheidel/postgres
+    project_dir: /home/tscheidel
     repo_url: "https://github.com/sche34/change_postgres.git"
 
   tasks:
@@ -11,13 +11,13 @@
         path: "{{ project_dir }}"
         state: directory
 
-    - name: Clone the Git repository into the shared project directory
-      git:
-        repo: "{{ repo_url }}"
-        dest: "{{ project_dir }}"
-        version: master
-        force: yes
-        accept_hostkey: yes
+    # - name: Clone the Git repository into the shared project directory
+    #   git:
+    #     repo: "{{ repo_url }}"
+    #     dest: "{{ project_dir }}"
+    #     version: master
+    #     force: yes
+    #     accept_hostkey: yes
 
     - name: Create a file
       ansible.builtin.file:
