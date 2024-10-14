@@ -1,5 +1,6 @@
 - name: set environment variables for postgres
   hosts: localhost
+  gather_facts: true
 
   tasks:
     - name: Set POSTGRES_USER environment variable
