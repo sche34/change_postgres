@@ -26,7 +26,7 @@
         var: subdirs
 
     - name: Set POSTGRES_DATA environment variable (no linked storage)
-      ansible.builtin.shell: echo 'export POSTGRES_DATA="data/postgres"' >> /etc/environment
+      ansible.builtin.shell: echo 'export POSTGRES_DATA="/data/postgres"' >> /etc/environment
       when: subdirs.matched == 1
 
     - name: Set POSTGRES_DATA environment variable (linked storage)
