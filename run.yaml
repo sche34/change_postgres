@@ -1,85 +1,12 @@
-- name: set environment variables & run docker-compose up -d
+- name: set environment variables for postgres
   hosts: localhost
 
-  vars:
-    project_dir: /home/tscheidel
-    repo_url: "https://github.com/sche34/change_postgres.git"
-
   tasks:
-    - name: Creates directory
-      ansible.builtin.file:
-        path: "{{ project_dir }}"
-        state: directory
+    - name: Set POSTGRES_USER environment variable
+      ansible.builtin.shell: echo 'export POSTGRES_USER="{{ POSTGRES_USER }}"' >> /etc/environment
 
-    # - name: Clone the Git repository into the shared project directory
-    #   git:
-    #     repo: "{{ repo_url }}"
-    #     dest: "{{ project_dir }}"
-    #     version: master
-    #     force: yes
-    #     accept_hostkey: yes
+    - name: Set POSTGRES_PASSWORD environment variable
+      ansible.builtin.shell: echo 'export POSTGRES_PASSWORD="{{ POSTGRES_PASSWORD }}"' >> /etc/environment
 
-    - name: Create a file
-      ansible.builtin.file:
-        path: "{{ project_dir }}/.env"
-        state: touch
-
-    - name: Write postgres user to .env file
-      ansible.builtin.lineinfile:
-        path: "{{ project_dir }}/.env"
-        line: 'POSTGRES_USER="{{ POSTGRES_USER }}"'
-
-    - name: Write postgres password to .env file
-      ansible.builtin.lineinfile:
-        path: "{{ project_dir }}/.env"
-        line: 'POSTGRES_PASSWORD="{{ POSTGRES_PASSWORD }}"'
-
-    - name: Write postgres db to .env file
-      ansible.builtin.lineinfile:
-        path: "{{ project_dir }}/.env"
-        line: 'POSTGRES_DB="{{ POSTGRES_DB }}"'
-    
-    # - name: Creates cli plugins directory
-    #   ansible.builtin.file:
-    #     path: ~/.docker/cli-plugins/
-    #     state: directory
-
-    # - name: Download the docker compose cli plugin
-    #   ansible.builtin.command:
-    #     cmd: curl -SL https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
-
-    # - name: Make the docker compose cli plugin executable
-    #   ansible.builtin.command:
-    #     cmd: chmod +x ~/.docker/cli-plugins/docker-compose
-
-    # - name: Update apt package cache
-    #   ansible.builtin.apt:
-    #     update_cache: yes        
-
-    # - name: install docker-compose
-    #   ansible.builtin.apt:
-    #     name: docker-compose
-    #     state: present
-
-    # - name: Install Docker
-    #   ansible.builtin.apt:
-    #     name: docker.io
-    #     state: present
-    #     update_cache: yes
-
-    # - name: Ensure Docker service is running
-    #   ansible.builtin.service:
-    #     name: docker
-    #     state: started
-    #     enabled: yes
-
-    # - name: Add user to Docker group
-    #   ansible.builtin.user:
-    #     name: "{{ ansible_user }}"
-    #     groups: docker
-    #     append: yes
-
-    # - name: Create and start services
-    #   ansible.builtin.command:
-    #     cmd: sudo ~/.docker/cli-plugins/docker-compose up -d
-    #     chdir: "{{ project_dir }}"
+    - name: Set POSTGRES_DB environment variable
+      ansible.builtin.shell: echo 'export POSTGRES_DB="{{ POSTGRES_DB }}"' >> /etc/environment
