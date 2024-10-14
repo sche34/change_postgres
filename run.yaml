@@ -41,4 +41,4 @@
 
     - name: display POSTGRES_DATA
       ansible.builtin.debug:
-        var: POSTGRES_DATA
+        cmd: echo $POSTGRES_DATA
