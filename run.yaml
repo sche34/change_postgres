@@ -28,15 +28,18 @@
         state: directory
       when: subdirs.matched == 1
 
-    - name: Set POSTGRES_DATA environment variable
-      ansible.builtin.shell: echo 'export POSTGRES_DATA="/home/{{ ansible_user_id }}/postgres"' >> /etc/environment
-      when: subdirs.matched == 1
-
-    - name: Set POSTGRES_DATA environment variable
-      ansible.builtin.shell: echo 'export POSTGRES_DATA="{{ item.path }}"' >> /etc/environment
-      with_items: "{{ subdirs.files }}"
-      when: item.path != '/home/{{ ansible_user_id }}/data/datasets'
-
     - name: display subdirs
       ansible.builtin.debug:
         var: subdirs
+
+    - name: Set POSTGRES_DATA environment variable
+      ansible.builtin.shell: |
+        if [ {{ subdirs.matched }} -eq 1 ]; then
+          echo 'export POSTGRES_DATA="/home/{{ ansible_user_id }}/postgres"' >> /etc/environment
+        else
+          for item in {{ subdirs.files }}; do
+            if [ "$item.path" != "/home/{{ ansible_user_id }}/data/datasets" ]; then
+              echo 'export POSTGRES_DATA="$item.path"' >> /etc/environment
+            fi
+          done
+        fi
