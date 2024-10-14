@@ -11,29 +11,30 @@
     - name: Set POSTGRES_DB environment variable
       ansible.builtin.shell: echo 'export POSTGRES_DB="{{ POSTGRES_DB }}"' >> /etc/environment
 
-    - name: display id
-      ansible.builtin.debug:
-        var: ansible_user_id
-
-    - name: Check for subdirectories in data
+    - name: Check for subdirectories in data directory
       ansible.builtin.find:
         paths: "/data"
         file_type: directory
       register: subdirs
 
-    - name: display subdirs
-      ansible.builtin.debug:
-        var: subdirs
-
     - name: Set POSTGRES_DATA environment variable (no linked storage)
-      ansible.builtin.shell: echo 'export POSTGRES_DATA="/data/postgres"' >> /etc/environment
+      set_fact:
+        POSTGRES_DATA: "/data/postgres"
       when: subdirs.matched == 1
 
-    - name: Set POSTGRES_DATA environment variable (linked storage)
-      ansible.builtin.shell: echo 'export POSTGRES_DATA="{{ subdirs.files[0].path }}/postgres"' >> /etc/environment
+    - name: Set POSTGRES_DATA variable (linked storage)
+      set_fact:
+        POSTGRES_DATA: "{{ subdirs.files[0].path }}/postgres"
       when: subdirs.matched != 1
+
+    - name: display subdirs
+      ansible.builtin.debug:
+        var: POSTGRES_DATA
+
+    - name: Set POSTGRES_DATA environment variable
+      ansible.builtin.shell: echo 'export POSTGRES_DATA="{{ POSTGRES_DATA }}"' >> /etc/environment
 
     - name: make sure the postgres data directory exists
       ansible.builtin.file:
-        path: "{{ lookup('ansible.builtin.env', 'POSTGRES_DATA') }}"
+        path: "{{ POSTGRES_DATA }}"
         state: directory
