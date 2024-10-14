@@ -12,6 +12,10 @@
     - name: Set POSTGRES_DB environment variable
       ansible.builtin.shell: echo 'export POSTGRES_DB="{{ POSTGRES_DB }}"' >> /etc/environment
 
+    - name: display id
+      ansible.builtin.debug:
+        var: ansible_user_id
+
     - name: Check for subdirectories in data
       ansible.builtin.find:
         paths: /home/{{ ansible_user_id }}/data
@@ -32,3 +36,7 @@
       ansible.builtin.shell: echo 'export POSTGRES_DATA="{{ item.path }}"' >> /etc/environment
       with_items: "{{ subdirs.files }}"
       when: item.path != '/home/{{ ansible_user_id }}/data/datasets'
+
+    - name: display subdirs
+      ansible.builtin.debug:
+        var: subdirs
