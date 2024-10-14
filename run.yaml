@@ -25,23 +25,19 @@
       ansible.builtin.debug:
         var: subdirs
 
-    - name: Ensure postgres directory exists if no other subdirectories, which means that there is not linked storage
+    - name: Ensure postgres directory (no linked storage)
       ansible.builtin.file:
         path: "data/postgres"
         state: directory
       when: subdirs.matched == 1
 
-    - name: Set POSTGRES_DATA environment variable
-      ansible.builtin.shell: |
-        if [ {{ subdirs.matched }} -eq 1 ]; then
-          echo 'export POSTGRES_DATA="/data/postgres"' >> /etc/environment
-        else
-          for item in {{ subdirs.files }}; do
-            if [ "$item.path" != "/data/datasets" ]; then
-              echo 'export POSTGRES_DATA="$item.path"' >> /etc/environment
-            fi
-          done
-        fi
+    - name: Set POSTGRES_DATA environment variable (no linked storage)
+      ansible.builtin.shell: echo 'export POSTGRES_DATA="{{ data/postgres }}"' >> /etc/environment
+      when: subdirs.matched == 1
+
+    - name: Set POSTGRES_DATA environment variable (linked storage)
+      ansible.builtin.shell: echo 'export POSTGRES_DATA="{{ subdirs.files[0].path }}"' >> /etc/environment
+      when: subdirs.matched != 1
 
     - name: display POSTGRES_DATA
       ansible.builtin.debug:
