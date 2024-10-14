@@ -1,7 +1,6 @@
 - name: set environment variables for postgres
   hosts: localhost
   gather_facts: true
-
   tasks:
     - name: Set POSTGRES_USER environment variable
       ansible.builtin.shell: echo 'export POSTGRES_USER="{{ POSTGRES_USER }}"' >> /etc/environment
@@ -18,13 +17,23 @@
 
     - name: Check for subdirectories in data
       ansible.builtin.find:
-        paths: /home/{{ ansible_user_id }}/data
+        paths: /etc/rsc/managedusers
+        file_type: directory
+      register: user_name
+
+    - name: display user name
+      ansible.builtin.debug:
+        var: user_name
+
+    - name: Check for subdirectories in data
+      ansible.builtin.find:
+        paths: "{{ user_name.files[0].path }}/data"
         file_type: directory
       register: subdirs
 
     - name: Ensure postgres directory exists if no other subdirectories, which means that there is not linked storage
       ansible.builtin.file:
-        path: /home/{{ ansible_user_id }}/postgres
+        path: "{{ user_name.files[0].path }}/postgres"
         state: directory
       when: subdirs.matched == 1
 
@@ -35,10 +44,10 @@
     - name: Set POSTGRES_DATA environment variable
       ansible.builtin.shell: |
         if [ {{ subdirs.matched }} -eq 1 ]; then
-          echo 'export POSTGRES_DATA="/home/{{ ansible_user_id }}/postgres"' >> /etc/environment
+          echo 'export POSTGRES_DATA="/home/{{ user_name.files[0].path }}/postgres"' >> /etc/environment
         else
           for item in {{ subdirs.files }}; do
-            if [ "$item.path" != "/home/{{ ansible_user_id }}/data/datasets" ]; then
+            if [ "$item.path" != "{{ user_name.files[0].path }}/data/datasets" ]; then
               echo 'export POSTGRES_DATA="$item.path"' >> /etc/environment
             fi
           done
