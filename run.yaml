@@ -13,14 +13,14 @@
 
     - name: Check for subdirectories in data
       ansible.builtin.find:
-      paths: /home/{{ ansible_user }}/data
-      file_type: directory
+        paths: /home/{{ ansible_user }}/data
+        file_type: directory
       register: subdirs
 
     - name: Ensure postgres directory exists if no other subdirectories, which means that there is not linked storage
       ansible.builtin.file:
-      path: /home/{{ ansible_user }}/postgres
-      state: directory
+        path: /home/{{ ansible_user }}/postgres
+        state: directory
       when: subdirs.matched == 1
 
     - name: Set POSTGRES_DATA environment variable
