@@ -27,10 +27,6 @@
         POSTGRES_DATA: "{{ subdirs.files[0].path }}/postgres"
       when: subdirs.matched != 1
 
-    - name: display subdirs
-      ansible.builtin.debug:
-        var: POSTGRES_DATA
-
     - name: Set POSTGRES_DATA environment variable
       ansible.builtin.shell: echo 'export POSTGRES_DATA="{{ POSTGRES_DATA }}"' >> /etc/environment
 
