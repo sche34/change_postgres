@@ -19,7 +19,7 @@
 
     - name: Set POSTGRES_DATA environment variable (no linked storage)
       set_fact:
-        POSTGRES_DATA: "/data/postgres"
+        POSTGRES_DATA: "/postgres"
       when: subdirs.matched == 1
 
     - name: Set POSTGRES_DATA variable (linked storage)
