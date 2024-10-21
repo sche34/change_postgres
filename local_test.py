@@ -17,17 +17,19 @@ connection = psycopg2.connect(database=os.getenv("POSTGRES_DB"),
 
 cursor = connection.cursor()
 
-sql_query ="""
-select 
-    *
-from 
-    test_table2
-"""
+create_query ="""create table if not exists test_table2 (id serial primary key, name varchar(50), age int)"""
+select_query ="""select * from test_table2"""
+drop_query ="""drop table test_table2"""
 
-# Fetch all rows from database
+# Create a table, insert some data, and then drop the table
 start_time = time.time()
-cursor.execute(sql_query)
+cursor.execute(create_query)
+connection.commit()
+cursor.execute(select_query)
 record = cursor.fetchall()
+if len(record) == 0:    
+    cursor.execute(drop_query)
+    connection.commit()	
 
 # Close the connection
 connection.close()
