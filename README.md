@@ -1,50 +1,21 @@
-# Postgresql & PgAdmin powered by compose
+# PostgreSQL Database Catalog Item on SURF Research Cloud
 
+## Introduction
+The PostgreSQL Database Catalog Item on SURF Research Cloud provides a PostgreSQL database setup on the SURF Research Cloud. It is made up of several components and runs automatically on port 5432. To configure the database, it uses several variables that are passed by a user when the workspace (a VM) is created. First, the postgres-env component collects these variables and prepares the workspace for the docker container. Then the postgres-docker component runs a container from the docker-compose file.
 
-## Requirements:
-* docker >= 17.12.0+
-* docker-compose
+## Components
+Every catalog item cosists of multiple components. There are several componentents that are standard to (a specific type of) Surf catalog items, see *step 1* of this [documentation page](https://servicedesk.surf.nl/wiki/display/WIKI/Create+a+catalog+item). Below the current section you can find the detailed description of the custom components, it is also available on SURF in the description of the catalog item.
 
-## Quick Start
-* Clone or download this repository
-* Go inside of directory,  `cd compose-postgres`
-* Run this command `docker-compose up -d`
+The PostgreSQL Database Catalog Item consists of the following components:
+- **SRC-OS**: standard SURF component
+- **SRC-CO**: standard SURF component
+- **SRC-External plugin**: standard SURF component that must be put before an external component. In our case the postgres-env component.
+- **Postgres-env**: sets environmental variables, checks for attached storage, sets POSTGRES_DATA (path to the postgres folder) to the attached volume or /data/postgres
+- **SRC-External Docker Compose**: standard SURF component that must be put before a docker-compose component. It makes sure that the docker-compose file in the next component will be run
+- **Postgres-docker**: A docker-compose file that defines the configuration (bind mount, network, ports) of the container that runs the postgres database. 
 
+### Postgres-env
+This component is needed for the preparation for the Postgres DB component. Based on the provided variables it sets the following environmental variables: POSTGRES_DB, POSTGRES_PASSWORD, POSTGRES_USER. It also searches for an attached storage. If there is an attached storage it sets the environmental variable POSTGRES_DATA to the postgres folder in the attached storage (path/to/attached/storage/postgres). Otherwise POSTGRES_DATA is set to data/postgres. In both cases, it makes sure that POSTGRES_DATA exists.
 
-## Environments
-This Compose file contains the following environment variables:
-
-* `POSTGRES_USER` the default value is **postgres**
-* `POSTGRES_PASSWORD` the default value is **changeme**
-* `PGADMIN_PORT` the default value is **5050**
-* `PGADMIN_DEFAULT_EMAIL` the default value is **pgadmin4@pgadmin.org**
-* `PGADMIN_DEFAULT_PASSWORD` the default value is **admin**
-
-## Access to postgres: 
-* `localhost:5432`
-* **Username:** postgres (as a default)
-* **Password:** changeme (as a default)
-
-## Access to PgAdmin: 
-* **URL:** `http://localhost:5050`
-* **Username:** pgadmin4@pgadmin.org (as a default)
-* **Password:** admin (as a default)
-
-## Add a new server in PgAdmin:
-* **Host name/address** `postgres`
-* **Port** `5432`
-* **Username** as `POSTGRES_USER`, by default: `postgres`
-* **Password** as `POSTGRES_PASSWORD`, by default `changeme`
-
-## Logging
-
-There are no easy way to configure pgadmin log verbosity and it can be overwhelming at times. It is possible to disable pgadmin logging on the container level.
-
-Add the following to `pgadmin` service in the `docker-compose.yml`:
-
-```
-logging:
-  driver: "none"
-```
-
-[reference](https://github.com/khezen/compose-postgres/pull/23/files)
+### Postgres-docker
+The database runs in a docker container and uses several environmental variables (that are set in postgres-env) for its configuration.
